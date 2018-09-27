@@ -182,6 +182,9 @@ message Alias {
 	// NamespaceID is the identifier of the namespace to which this alias
 	// belongs.
 	string namespace_id = 11;
+
+	// NameRaw is the replica of the Name field with its casing preserved
+	string name_raw = 12;
 }
 
 // Deprecated. Retained for backwards compatibility.

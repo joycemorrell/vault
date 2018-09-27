@@ -182,10 +182,6 @@ func (i *IdentityStore) handleAliasUpdateCommon() framework.OperationFunc {
 			if entity == nil {
 				return nil, fmt.Errorf("existing alias is not associated with an entity")
 			}
-			if canonicalID == "" || entity.ID == canonicalID {
-				// Nothing to do
-				return nil, nil
-			}
 		}
 
 		resp := &logical.Response{}
@@ -204,7 +200,7 @@ func (i *IdentityStore) handleAliasUpdateCommon() framework.OperationFunc {
 			// If we can look up by the given canonical ID, see if this is a
 			// transfer; otherwise if we found no previous entity but we find one
 			// here, use it.
-			canonicalEntity, err := i.MemDBEntityByID(canonicalID, true)
+			canonicalEntity, err := i.MemDBEntityByID(canonicalID, false)
 			if err != nil {
 				return nil, err
 			}
@@ -254,6 +250,12 @@ func (i *IdentityStore) handleAliasUpdateCommon() framework.OperationFunc {
 		err = i.sanitizeAlias(ctx, alias)
 		if err != nil {
 			return nil, err
+		}
+
+		for index, item := range entity.Aliases {
+			if item.ID == alias.ID {
+				entity.Aliases[index] = alias
+			}
 		}
 
 		// Index entity and its aliases in MemDB and persist entity along with

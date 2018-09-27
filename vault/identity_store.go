@@ -361,6 +361,10 @@ func (i *IdentityStore) parseGroupFromBucketItem(item *storagepacker.Item) (*ide
 		group.NameRaw = group.Name
 	}
 
+	if group.Alias != nil && group.Alias.Name != "" && group.Alias.NameRaw == "" {
+		group.Alias.NameRaw = group.Alias.Name
+	}
+
 	return &group, nil
 }
 

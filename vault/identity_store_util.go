@@ -254,7 +254,7 @@ func (i *IdentityStore) upsertEntityInTxn(ctx context.Context, txn *memdb.Txn, e
 		return fmt.Errorf("entity is nil")
 	}
 
-	aliasNames := make([]string, len(entity.Aliases))
+	aliasFactors := make([]string, len(entity.Aliases))
 
 	for index, alias := range entity.Aliases {
 		// Verify that alias is not associated to a different one already
@@ -277,11 +277,11 @@ func (i *IdentityStore) upsertEntityInTxn(ctx context.Context, txn *memdb.Txn, e
 			return nil
 		}
 
-		if strutil.StrListContains(aliasNames, i.sanitizeName(alias.Name)) && !i.core.disableCaseInsensitiveIdentityNames {
-			return fmt.Errorf(`Duplicate alias name %q for entity name %q.
+		if strutil.StrListContains(aliasFactors, i.sanitizeName(alias.Name)+alias.MountAccessor) && !i.core.disableCaseInsensitiveIdentityNames {
+			return fmt.Errorf(`Duplicate alias factors name=%q mount_accessor=%q for entity name %q.
 Identity names are treated case insensitively unless
 'disable_case_insensitive_identity_names' config is set.`,
-				alias.NameRaw, entity.NameRaw)
+				alias.NameRaw, alias.MountAccessor, entity.NameRaw)
 		}
 
 		// Insert or update alias in MemDB using the transaction created above
@@ -290,7 +290,7 @@ Identity names are treated case insensitively unless
 			return err
 		}
 
-		aliasNames[index] = i.sanitizeName(alias.Name)
+		aliasFactors[index] = i.sanitizeName(alias.Name) + alias.MountAccessor
 	}
 
 	// If previous entity is set, update it in MemDB and persist it

@@ -381,6 +381,8 @@ func (i *IdentityStore) MemDBUpsertAliasInTxn(txn *memdb.Txn, alias *identity.Al
 		}
 	}
 
+	alias.Name = i.sanitizeName(alias.Name)
+
 	if err := txn.Insert(tableName, alias); err != nil {
 		return errwrap.Wrapf("failed to update alias into memdb: {{err}}", err)
 	}
@@ -443,6 +445,8 @@ func (i *IdentityStore) MemDBAliasByFactors(mountAccessor, aliasName string, clo
 	}
 
 	txn := i.db.Txn(false)
+
+	aliasName = i.sanitizeName(aliasName)
 
 	return i.MemDBAliasByFactorsInTxn(txn, mountAccessor, aliasName, clone, groupAlias)
 }
@@ -1840,7 +1844,8 @@ func (i *IdentityStore) handleAliasListCommon(ctx context.Context, groupAlias bo
 		alias := raw.(*identity.Alias)
 		aliasIDs = append(aliasIDs, alias.ID)
 		aliasInfoEntry := map[string]interface{}{
-			"name":           alias.Name,
+			// Case sensitive name
+			"name":           alias.NameRaw,
 			"canonical_id":   alias.CanonicalID,
 			"mount_accessor": alias.MountAccessor,
 		}

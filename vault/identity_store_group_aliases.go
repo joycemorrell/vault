@@ -209,6 +209,7 @@ func (i *IdentityStore) handleGroupAliasUpdateCommon(ctx context.Context, req *l
 	}
 
 	group.Alias.Name = groupAliasName
+	group.Alias.NameRaw = groupAliasName
 	group.Alias.MountAccessor = mountValidationResp.MountAccessor
 	// Explicitly correct for previous versions that persisted this
 	group.Alias.MountType = ""

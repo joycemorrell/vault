@@ -463,6 +463,7 @@ func (i *IdentityStore) CreateOrFetchEntity(ctx context.Context, alias *logical.
 	newAlias := &identity.Alias{
 		CanonicalID:   entity.ID,
 		Name:          alias.Name,
+		NameRaw:       alias.Name,
 		MountAccessor: alias.MountAccessor,
 		Metadata:      alias.Metadata,
 		MountPath:     mountValidationResp.MountPath,

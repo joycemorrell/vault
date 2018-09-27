@@ -315,6 +315,12 @@ func (i *IdentityStore) parseEntityFromBucketItem(ctx context.Context, item *sto
 		entity.NameRaw = entity.Name
 	}
 
+	for _, alias := range entity.Aliases {
+		if alias.Name != "" && alias.NameRaw == "" {
+			alias.NameRaw = alias.Name
+		}
+	}
+
 	if persistNeeded && !i.core.ReplicationState().HasState(consts.ReplicationPerformanceSecondary) {
 		entityAsAny, err := ptypes.MarshalAny(&entity)
 		if err != nil {

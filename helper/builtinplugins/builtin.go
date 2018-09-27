@@ -1,7 +1,7 @@
 package builtinplugins
 
 import (
-	"github.com/hashicorp/vault/logical/plugin"
+	"github.com/hashicorp/vault/helper/consts"
 	"github.com/hashicorp/vault/plugins/database/cassandra"
 	"github.com/hashicorp/vault/plugins/database/hana"
 	"github.com/hashicorp/vault/plugins/database/mongodb"
@@ -32,14 +32,14 @@ type BuiltinFactory func() (interface{}, error)
 
 // Get returns the BuiltinFactory func for a particular backend plugin
 // from the databasePlugins map.
-func Get(name string, pluginType plugin.PluginType) (BuiltinFactory, bool) {
+func Get(name string, pluginType consts.PluginType) (BuiltinFactory, bool) {
 	searchMap := make(map[string]BuiltinFactory)
 	switch pluginType {
-	case plugin.PluginTypeCredential:
+	case consts.PluginTypeCredential:
 		searchMap = credentialBackends
-	case plugin.PluginTypeSecrets:
+	case consts.PluginTypeSecrets:
 		searchMap = logicalBackends
-	case plugin.PluginTypeDatabase:
+	case consts.PluginTypeDatabase:
 		searchMap = databasePlugins
 	}
 	f, ok := searchMap[name]

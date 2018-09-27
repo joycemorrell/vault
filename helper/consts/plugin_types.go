@@ -1,4 +1,4 @@
-package plugin
+package consts
 
 type PluginType int
 

@@ -79,9 +79,9 @@ func (i *IdentityStore) loadGroups(ctx context.Context) error {
 				return err
 			}
 			if groupByName != nil && !i.core.disableCaseInsensitiveIdentityNames {
-				return fmt.Errorf(`Duplicate group names %q and %q.
-Identity names are treated case insensitively unless
-'disable_case_insensitive_identity_names' config is set.`,
+				return fmt.Errorf(`duplicate group names %q and %q;
+identity names are treated case insensitively unless
+'disable_case_insensitive_identity_names' config is set`,
 					group.NameRaw, groupByName.NameRaw)
 			}
 
@@ -212,9 +212,9 @@ func (i *IdentityStore) loadEntities(ctx context.Context) error {
 					return nil
 				}
 				if entityByName != nil && !i.core.disableCaseInsensitiveIdentityNames {
-					return fmt.Errorf(`Duplicate entity names %q and %q.
-Identity names are treated case insensitively unless
-'disable_case_insensitive_identity_names' config is set.`,
+					return fmt.Errorf(`duplicate entity names %q and %q;
+identity names are treated case insensitively unless
+'disable_case_insensitive_identity_names' config is set`,
 						entity.NameRaw, entityByName.NameRaw)
 				}
 
@@ -278,9 +278,9 @@ func (i *IdentityStore) upsertEntityInTxn(ctx context.Context, txn *memdb.Txn, e
 		}
 
 		if strutil.StrListContains(aliasFactors, i.sanitizeName(alias.Name)+alias.MountAccessor) && !i.core.disableCaseInsensitiveIdentityNames {
-			return fmt.Errorf(`Duplicate alias factors name=%q mount_accessor=%q for entity name %q.
-Identity names are treated case insensitively unless
-'disable_case_insensitive_identity_names' config is set.`,
+			return fmt.Errorf(`duplicate alias factors name=%q mount_accessor=%q for entity name %q;
+identity names are treated case insensitively unless
+'disable_case_insensitive_identity_names' config is set`,
 				alias.NameRaw, alias.MountAccessor, entity.NameRaw)
 		}
 
@@ -631,10 +631,10 @@ func (i *IdentityStore) MemDBEntityByName(ctx context.Context, entityName string
 
 	txn := i.db.Txn(false)
 
-	return i.MemDBEntityByNameInTxn(txn, ctx, entityName, clone)
+	return i.MemDBEntityByNameInTxn(ctx, txn, entityName, clone)
 }
 
-func (i *IdentityStore) MemDBEntityByNameInTxn(txn *memdb.Txn, ctx context.Context, entityName string, clone bool) (*identity.Entity, error) {
+func (i *IdentityStore) MemDBEntityByNameInTxn(ctx context.Context, txn *memdb.Txn, entityName string, clone bool) (*identity.Entity, error) {
 	if entityName == "" {
 		return nil, fmt.Errorf("missing entity name")
 	}

@@ -29,7 +29,6 @@ func TestIdentityStore_CaseInsensitiveGroupAliasName(t *testing.T) {
 	testAliasName := "testAliasName"
 
 	// Create a case sensitive alias name
-	// Create a case sensitive alias name
 	resp, err = i.HandleRequest(ctx, &logical.Request{
 		Path:      "group-alias",
 		Operation: logical.UpdateOperation,

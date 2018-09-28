@@ -137,6 +137,10 @@ to specify where the configuration is.
 - `pid_file` `(string: "")` - Path to the file in which the Vault server's
   Process ID (PID) should be stored.
 
+- `disable_case_insensitive_identity_names` - Specifies whether or not the
+  names belonging to the artifacts of identity store should be treated case
+  insensitively.
+
 ### High Availability Parameters
 
 The following parameters are used on backends that support [high availability][high-availability].

@@ -200,7 +200,7 @@ func (i *IdentityStore) handleAliasUpdateCommon() framework.OperationFunc {
 			// If we can look up by the given canonical ID, see if this is a
 			// transfer; otherwise if we found no previous entity but we find one
 			// here, use it.
-			canonicalEntity, err := i.MemDBEntityByID(canonicalID, false)
+			canonicalEntity, err := i.MemDBEntityByID(canonicalID, true)
 			if err != nil {
 				return nil, err
 			}

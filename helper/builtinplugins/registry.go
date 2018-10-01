@@ -1,13 +1,11 @@
 package builtinplugins
 
 import (
-	"github.com/hashicorp/vault/builtin/plugin"
-
 	ad "github.com/hashicorp/vault-plugin-secrets-ad/plugin"
 	"github.com/hashicorp/vault-plugin-secrets-alicloud"
 	azure "github.com/hashicorp/vault-plugin-secrets-azure"
 	gcp "github.com/hashicorp/vault-plugin-secrets-gcp/plugin"
-	kv "github.com/hashicorp/vault-plugin-secrets-kv"
+	"github.com/hashicorp/vault-plugin-secrets-kv"
 	"github.com/hashicorp/vault/builtin/logical/aws"
 	"github.com/hashicorp/vault/builtin/logical/cassandra"
 	"github.com/hashicorp/vault/builtin/logical/consul"
@@ -22,6 +20,7 @@ import (
 	"github.com/hashicorp/vault/builtin/logical/ssh"
 	"github.com/hashicorp/vault/builtin/logical/totp"
 	"github.com/hashicorp/vault/builtin/logical/transit"
+	"github.com/hashicorp/vault/logical"
 
 	credAliCloud "github.com/hashicorp/vault-plugin-auth-alicloud"
 	credAzure "github.com/hashicorp/vault-plugin-auth-azure"
@@ -40,50 +39,42 @@ import (
 	credUserpass "github.com/hashicorp/vault/builtin/credential/userpass"
 )
 
-var credentialBackends = map[string]BuiltinFactory{
-	"alicloud":   toBuiltinFactory(credAliCloud.Factory),
-	"app-id":     toBuiltinFactory(credAppId.Factory),
-	"approle":    toBuiltinFactory(credAppRole.Factory),
-	"aws":        toBuiltinFactory(credAws.Factory),
-	"azure":      toBuiltinFactory(credAzure.Factory),
-	"centrify":   toBuiltinFactory(credCentrify.Factory),
-	"cert":       toBuiltinFactory(credCert.Factory),
-	"gcp":        toBuiltinFactory(credGcp.Factory),
-	"github":     toBuiltinFactory(credGitHub.Factory),
-	"jwt":        toBuiltinFactory(credJWT.Factory),
-	"kubernetes": toBuiltinFactory(credKube.Factory),
-	"ldap":       toBuiltinFactory(credLdap.Factory),
-	"okta":       toBuiltinFactory(credOkta.Factory),
-	"radius":     toBuiltinFactory(credRadius.Factory),
-	"userpass":   toBuiltinFactory(credUserpass.Factory),
+var credentialBackends = map[string]logical.Factory{
+	"alicloud":   credAliCloud.Factory,
+	"app-id":     credAppId.Factory,
+	"approle":    credAppRole.Factory,
+	"aws":        credAws.Factory,
+	"azure":      credAzure.Factory,
+	"centrify":   credCentrify.Factory,
+	"cert":       credCert.Factory,
+	"gcp":        credGcp.Factory,
+	"github":     credGitHub.Factory,
+	"jwt":        credJWT.Factory,
+	"kubernetes": credKube.Factory,
+	"ldap":       credLdap.Factory,
+	"okta":       credOkta.Factory,
+	"radius":     credRadius.Factory,
+	"userpass":   credUserpass.Factory,
 }
 
-var logicalBackends = map[string]BuiltinFactory{
-	"ad":         toBuiltinFactory(ad.Factory),
-	"alicloud":   toBuiltinFactory(alicloud.Factory),
-	"aws":        toBuiltinFactory(aws.Factory),
-	"azure":      toBuiltinFactory(azure.Factory),
-	"cassandra":  toBuiltinFactory(cassandra.Factory),
-	"consul":     toBuiltinFactory(consul.Factory),
-	"database":   toBuiltinFactory(database.Factory),
-	"gcp":        toBuiltinFactory(gcp.Factory),
-	"kv":         toBuiltinFactory(kv.Factory),
-	"mongodb":    toBuiltinFactory(mongodb.Factory),
-	"mssql":      toBuiltinFactory(mssql.Factory),
-	"mysql":      toBuiltinFactory(mysql.Factory),
-	"nomad":      toBuiltinFactory(nomad.Factory),
-	"pki":        toBuiltinFactory(pki.Factory),
-	"plugin":     toBuiltinFactory(plugin.Factory),
-	"postgresql": toBuiltinFactory(postgresql.Factory),
-	"rabbitmq":   toBuiltinFactory(rabbitmq.Factory),
-	"ssh":        toBuiltinFactory(ssh.Factory),
-	"totp":       toBuiltinFactory(totp.Factory),
-	"transit":    toBuiltinFactory(transit.Factory),
-}
-
-// TODO it's redundant to call this so many times
-func toBuiltinFactory(ifc interface{}) BuiltinFactory {
-	return func() (interface{}, error) {
-		return ifc, nil
-	}
+var logicalBackends = map[string]logical.Factory{
+	"ad":         ad.Factory,
+	"alicloud":   alicloud.Factory,
+	"aws":        aws.Factory,
+	"azure":      azure.Factory,
+	"cassandra":  cassandra.Factory,
+	"consul":     consul.Factory,
+	"database":   database.Factory,
+	"gcp":        gcp.Factory,
+	"kv":         kv.Factory,
+	"mongodb":    mongodb.Factory,
+	"mssql":      mssql.Factory,
+	"mysql":      mysql.Factory,
+	"nomad":      nomad.Factory,
+	"pki":        pki.Factory,
+	"postgresql": postgresql.Factory,
+	"rabbitmq":   rabbitmq.Factory,
+	"ssh":        ssh.Factory,
+	"totp":       totp.Factory,
+	"transit":    transit.Factory,
 }

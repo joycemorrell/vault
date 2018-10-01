@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/rpc"
 
+	"github.com/hashicorp/vault/helper/consts"
+
 	log "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/vault/logical"
@@ -77,7 +79,7 @@ type SetupReply struct {
 
 // TypeReply is the reply for the Type method.
 type TypeReply struct {
-	Type logical.BackendType
+	Type consts.BackendType
 }
 
 func (b *backendPluginClient) HandleRequest(ctx context.Context, req *logical.Request) (*logical.Response, error) {
@@ -237,12 +239,12 @@ func (b *backendPluginClient) Setup(ctx context.Context, config *logical.Backend
 	return nil
 }
 
-func (b *backendPluginClient) Type() logical.BackendType {
+func (b *backendPluginClient) Type() consts.BackendType {
 	var reply TypeReply
 	err := b.client.Call("Plugin.Type", new(interface{}), &reply)
 	if err != nil {
-		return logical.TypeUnknown
+		return consts.TypeUnknown
 	}
 
-	return logical.BackendType(reply.Type)
+	return consts.BackendType(reply.Type)
 }

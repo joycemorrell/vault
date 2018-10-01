@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/vault/helper/license"
 	"github.com/hashicorp/vault/helper/pluginutil"
 	"github.com/hashicorp/vault/helper/wrapping"
-	"github.com/hashicorp/vault/logical/plugin"
 )
 
 // SystemView exposes system configuration information in a safe way
@@ -57,7 +56,7 @@ type SystemView interface {
 
 	// LookupPlugin looks into the plugin catalog for a plugin with the given
 	// name. Returns a PluginRunner or an error if a plugin can not be found.
-	LookupPlugin(context.Context, string, plugin.PluginType) (*pluginutil.PluginRunner, error)
+	LookupPlugin(context.Context, string, consts.BackendType) (*pluginutil.PluginRunner, error)
 
 	// MlockEnabled returns the configuration setting for enabling mlock on
 	// plugins.
@@ -119,7 +118,7 @@ func (d StaticSystemView) ResponseWrapData(_ context.Context, data map[string]in
 	return nil, errors.New("ResponseWrapData is not implemented in StaticSystemView")
 }
 
-func (d StaticSystemView) LookupPlugin(_ context.Context, name string) (*pluginutil.PluginRunner, error) {
+func (d StaticSystemView) LookupPlugin(_ context.Context, _ string, _ consts.BackendType) (*pluginutil.PluginRunner, error) {
 	return nil, errors.New("LookupPlugin is not implemented in StaticSystemView")
 }
 

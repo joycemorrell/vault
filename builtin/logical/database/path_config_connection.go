@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/hashicorp/vault/helper/consts"
+
 	"github.com/fatih/structs"
 	uuid "github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/vault/builtin/logical/database/dbplugin"
@@ -282,7 +284,7 @@ func (b *databaseBackend) connectionWriteHandler() framework.OperationFunc {
 		delete(data.Raw, "root_rotation_statements")
 
 		// Create a database plugin and initialize it.
-		db, err := dbplugin.PluginFactory(ctx, config.PluginName, b.System(), b.logger)
+		db, err := dbplugin.PluginFactory(ctx, config.PluginName, consts.PluginTypeDatabase, b.System(), b.logger)
 		if err != nil {
 			return logical.ErrorResponse(fmt.Sprintf("error creating database object: %s", err)), nil
 		}

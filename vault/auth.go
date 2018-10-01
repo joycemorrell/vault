@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/go-uuid"
+	"github.com/hashicorp/vault/builtin/plugin"
 	"github.com/hashicorp/vault/helper/consts"
 	"github.com/hashicorp/vault/helper/jsonutil"
 	"github.com/hashicorp/vault/helper/namespace"
@@ -156,7 +157,7 @@ func (c *Core) enableCredentialInternal(ctx context.Context, entry *MountEntry, 
 
 	// Check for the correct backend type
 	backendType := backend.Type()
-	if entry.Type == "plugin" && backendType != logical.TypeCredential {
+	if entry.Type == "plugin" && backendType != consts.TypeLogical {
 		return fmt.Errorf("cannot mount %q of type %q as an auth backend", entry.Config.PluginName, backendType)
 	}
 
@@ -624,7 +625,7 @@ func (c *Core) setupCredentials(ctx context.Context) error {
 		{
 			// Check for the correct backend type
 			backendType := backend.Type()
-			if entry.Type == "plugin" && backendType != logical.TypeCredential {
+			if entry.Type == "plugin" && backendType != consts.TypeLogical {
 				return fmt.Errorf("cannot mount %q of type %q as an auth backend", entry.Config.PluginName, backendType)
 			}
 
@@ -706,25 +707,20 @@ func (c *Core) teardownCredentials(ctx context.Context) error {
 
 // newCredentialBackend is used to create and configure a new credential backend by name
 func (c *Core) newCredentialBackend(ctx context.Context, entry *MountEntry, sysView logical.SystemView, view logical.Storage) (logical.Backend, error) {
-	// TODO this should only be using the NewPlugin method
 	t := entry.Type
 	if alias, ok := credentialAliases[t]; ok {
 		t = alias
 	}
 
-	f, ok := c.credentialBackends[t]
-	if !ok {
-		return nil, fmt.Errorf("unknown backend type: %q", t)
-	}
+	f := plugin.Factory
 
 	// Set up conf to pass in plugin_name
 	conf := make(map[string]string, len(entry.Options)+1)
 	for k, v := range entry.Options {
 		conf[k] = v
 	}
-	if entry.Config.PluginName != "" {
-		conf["plugin_name"] = entry.Config.PluginName
-	}
+	conf["plugin_name"] = t
+	conf["backend_type"] = consts.TypeCredential.String()
 
 	authLogger := c.baseLogger.Named(fmt.Sprintf("auth.%s.%s", t, entry.Accessor))
 	c.AddLogger(authLogger)

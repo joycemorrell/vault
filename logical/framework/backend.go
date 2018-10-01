@@ -12,6 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/hashicorp/vault/helper/consts"
+
 	"github.com/hashicorp/errwrap"
 	log "github.com/hashicorp/go-hclog"
 
@@ -83,7 +85,7 @@ type Backend struct {
 	AuthRenew OperationFunc
 
 	// Type is the logical.BackendType for the backend implementation
-	BackendType logical.BackendType
+	BackendType consts.BackendType
 
 	logger  log.Logger
 	system  logical.SystemView
@@ -275,7 +277,7 @@ func (b *Backend) System() logical.SystemView {
 }
 
 // Type returns the backend type
-func (b *Backend) Type() logical.BackendType {
+func (b *Backend) Type() consts.BackendType {
 	return b.BackendType
 }
 

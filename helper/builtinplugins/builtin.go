@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/vault/plugins/helper/database/credsutil"
 )
 
+// TODO move to registry
 var databasePlugins = map[string]BuiltinFactory{
 	// These four databasePlugins all use the same mysql implementation but with
 	// different username settings passed by the constructor.
@@ -30,23 +31,31 @@ var databasePlugins = map[string]BuiltinFactory{
 // the plugin's New() func.
 type BuiltinFactory func() (interface{}, error)
 
+func toBuiltinFactory(ifc interface{}) BuiltinFactory {
+	return func() (interface{}, error) {
+		return ifc, nil
+	}
+}
+
 // Get returns the BuiltinFactory func for a particular backend plugin
 // from the databasePlugins map.
 func Get(name string, pluginType consts.PluginType) (BuiltinFactory, bool) {
-	searchMap := make(map[string]BuiltinFactory)
 	switch pluginType {
 	case consts.PluginTypeCredential:
-		searchMap = credentialBackends
+		f, ok := credentialBackends[name]
+		return toBuiltinFactory(f), ok
 	case consts.PluginTypeSecrets:
-		searchMap = logicalBackends
+		f, ok := logicalBackends[name]
+		return toBuiltinFactory(f), ok
 	case consts.PluginTypeDatabase:
-		searchMap = databasePlugins
+		f, ok := databasePlugins[name]
+		return f, ok
+	default:
+		return nil, false
 	}
-	f, ok := searchMap[name]
-	return f, ok
 }
 
-// TODO should this now include more keys?
+// TODO should this now include more keys? or be renamed to being a db plugin?
 // Keys returns the list of plugin names that are considered builtin databasePlugins.
 func Keys() []string {
 	keys := make([]string, len(databasePlugins))

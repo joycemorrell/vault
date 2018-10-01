@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-uuid"
+	"github.com/hashicorp/vault/builtin/plugin"
 	"github.com/hashicorp/vault/helper/consts"
 	"github.com/hashicorp/vault/helper/jsonutil"
 	"github.com/hashicorp/vault/helper/namespace"
@@ -431,7 +432,7 @@ func (c *Core) mountInternal(ctx context.Context, entry *MountEntry, updateStora
 
 	// Check for the correct backend type
 	backendType := backend.Type()
-	if entry.Type == "plugin" && backendType != logical.TypeLogical {
+	if entry.Type == "plugin" && backendType != consts.TypeLogical {
 		return fmt.Errorf("cannot mount %q of type %q as a logical backend", entry.Config.PluginName, backendType)
 	}
 
@@ -1043,7 +1044,7 @@ func (c *Core) setupMounts(ctx context.Context) error {
 		{
 			// Check for the correct backend type
 			backendType := backend.Type()
-			if entry.Type == "plugin" && backendType != logical.TypeLogical {
+			if entry.Type == "plugin" && backendType != consts.TypeLogical {
 				return fmt.Errorf("cannot mount %q of type %q as a logical backend", entry.Config.PluginName, backendType)
 			}
 
@@ -1110,24 +1111,20 @@ func (c *Core) unloadMounts(ctx context.Context) error {
 
 // newLogicalBackend is used to create and configure a new logical backend by name
 func (c *Core) newLogicalBackend(ctx context.Context, entry *MountEntry, sysView logical.SystemView, view logical.Storage) (logical.Backend, error) {
-	// TODO this should only be using the NewPlugin method
 	t := entry.Type
 	if alias, ok := mountAliases[t]; ok {
 		t = alias
 	}
-	f, ok := c.logicalBackends[t]
-	if !ok {
-		return nil, fmt.Errorf("unknown backend type: %q", t)
-	}
+
+	f := plugin.Factory
 
 	// Set up conf to pass in plugin_name
 	conf := make(map[string]string, len(entry.Options)+1)
 	for k, v := range entry.Options {
 		conf[k] = v
 	}
-	if entry.Config.PluginName != "" {
-		conf["plugin_name"] = entry.Config.PluginName
-	}
+	conf["plugin_name"] = t
+	conf["backend_type"] = consts.TypeLogical.String()
 
 	backendLogger := c.baseLogger.Named(fmt.Sprintf("secrets.%s.%s", t, entry.Accessor))
 	c.AddLogger(backendLogger)

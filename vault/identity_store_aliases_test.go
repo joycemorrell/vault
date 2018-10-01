@@ -66,6 +66,19 @@ func TestIdentityStore_CaseInsensitiveEntityAliasName(t *testing.T) {
 	if err != nil || (resp != nil && resp.IsError()) {
 		t.Fatalf("bad: err:%v\nresp: %#v", err, resp)
 	}
+
+	// Ensure that reading the alias returns lower cased alias name
+	resp, err = i.HandleRequest(ctx, &logical.Request{
+		Path:      "entity-alias/id/" + aliasID,
+		Operation: logical.ReadOperation,
+	})
+	if err != nil || (resp != nil && resp.IsError()) {
+		t.Fatalf("bad: err:%v\nresp: %#v", err, resp)
+	}
+	aliasName = resp.Data["name"].(string)
+	if aliasName != strings.ToLower(testAliasName) {
+		t.Fatalf("bad alias name; expected: %q, actual: %q", testAliasName, aliasName)
+	}
 }
 
 // This test is required because MemDB does not take care of ensuring

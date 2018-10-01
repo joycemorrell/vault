@@ -157,7 +157,7 @@ func (c *Core) enableCredentialInternal(ctx context.Context, entry *MountEntry, 
 
 	// Check for the correct backend type
 	backendType := backend.Type()
-	if entry.Type == "plugin" && backendType != consts.TypeLogical {
+	if entry.Type == "plugin" && backendType != logical.TypeLogical {
 		return fmt.Errorf("cannot mount %q of type %q as an auth backend", entry.Config.PluginName, backendType)
 	}
 
@@ -625,7 +625,7 @@ func (c *Core) setupCredentials(ctx context.Context) error {
 		{
 			// Check for the correct backend type
 			backendType := backend.Type()
-			if entry.Type == "plugin" && backendType != consts.TypeLogical {
+			if entry.Type == "plugin" && backendType != logical.TypeLogical {
 				return fmt.Errorf("cannot mount %q of type %q as an auth backend", entry.Config.PluginName, backendType)
 			}
 
@@ -720,7 +720,7 @@ func (c *Core) newCredentialBackend(ctx context.Context, entry *MountEntry, sysV
 		conf[k] = v
 	}
 	conf["plugin_name"] = t
-	conf["backend_type"] = consts.TypeCredential.String()
+	conf["plugin_type"] = consts.PluginTypeCredential.String()
 
 	authLogger := c.baseLogger.Named(fmt.Sprintf("auth.%s.%s", t, entry.Accessor))
 	c.AddLogger(authLogger)

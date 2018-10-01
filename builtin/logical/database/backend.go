@@ -75,7 +75,7 @@ func Backend(conf *logical.BackendConfig) *databaseBackend {
 		},
 		Clean:       b.closeAllDBs,
 		Invalidate:  b.invalidate,
-		BackendType: consts.TypeLogical,
+		BackendType: logical.TypeLogical,
 	}
 
 	b.logger = conf.Logger
@@ -200,7 +200,7 @@ func (b *databaseBackend) GetConnection(ctx context.Context, s logical.Storage, 
 		return nil, err
 	}
 
-	dbp, err := dbplugin.PluginFactory(ctx, config.PluginName, consts.TypeDatabase, b.System(), b.logger)
+	dbp, err := dbplugin.PluginFactory(ctx, config.PluginName, consts.PluginTypeDatabase, b.System(), b.logger)
 	if err != nil {
 		return nil, err
 	}

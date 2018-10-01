@@ -301,7 +301,7 @@ func (b *SystemBackend) handlePluginCatalogRead(ctx context.Context, req *logica
 	if pluginName == "" {
 		return logical.ErrorResponse("missing plugin name"), nil
 	}
-	pluginType, err := consts.ParseBackendType(d.Get("type").(string))
+	pluginType, err := consts.ParsePluginType(d.Get("type").(string))
 	if err != nil {
 		return nil, err
 	}

@@ -432,7 +432,7 @@ func (c *Core) mountInternal(ctx context.Context, entry *MountEntry, updateStora
 
 	// Check for the correct backend type
 	backendType := backend.Type()
-	if entry.Type == "plugin" && backendType != consts.TypeLogical {
+	if entry.Type == "plugin" && backendType != logical.TypeLogical {
 		return fmt.Errorf("cannot mount %q of type %q as a logical backend", entry.Config.PluginName, backendType)
 	}
 
@@ -1044,7 +1044,7 @@ func (c *Core) setupMounts(ctx context.Context) error {
 		{
 			// Check for the correct backend type
 			backendType := backend.Type()
-			if entry.Type == "plugin" && backendType != consts.TypeLogical {
+			if entry.Type == "plugin" && backendType != logical.TypeLogical {
 				return fmt.Errorf("cannot mount %q of type %q as a logical backend", entry.Config.PluginName, backendType)
 			}
 
@@ -1124,7 +1124,7 @@ func (c *Core) newLogicalBackend(ctx context.Context, entry *MountEntry, sysView
 		conf[k] = v
 	}
 	conf["plugin_name"] = t
-	conf["backend_type"] = consts.TypeLogical.String()
+	conf["plugin_type"] = consts.PluginTypeSecrets.String()
 
 	backendLogger := c.baseLogger.Named(fmt.Sprintf("secrets.%s.%s", t, entry.Accessor))
 	c.AddLogger(backendLogger)

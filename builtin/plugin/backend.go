@@ -44,7 +44,7 @@ func Backend(ctx context.Context, conf *logical.BackendConfig) (logical.Backend,
 
 	name := conf.Config["plugin_name"]
 	// TODO where does this get set? Backwards compatibility?
-	pluginType, err := consts.ParseBackendType(conf.Config["backend_type"])
+	pluginType, err := consts.ParsePluginType(conf.Config["plugin_type"])
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func (b *backend) reloadBackend(ctx context.Context) error {
 func (b *backend) startBackend(ctx context.Context) error {
 	pluginName := b.config.Config["plugin_name"]
 	// TODO where does this get set? Backwards compatibility?
-	pluginType, err := consts.ParseBackendType(b.config.Config["backend_type"])
+	pluginType, err := consts.ParsePluginType(b.config.Config["plugin_type"])
 	if err != nil {
 		return err
 	}

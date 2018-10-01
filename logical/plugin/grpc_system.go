@@ -4,11 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"time"
-
-	"google.golang.org/grpc"
-
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/vault/helper/consts"
 	"github.com/hashicorp/vault/helper/license"
@@ -16,6 +13,7 @@ import (
 	"github.com/hashicorp/vault/helper/wrapping"
 	"github.com/hashicorp/vault/logical"
 	"github.com/hashicorp/vault/logical/plugin/pb"
+	"google.golang.org/grpc"
 )
 
 func newGRPCSystemView(conn *grpc.ClientConn) *gRPCSystemViewClient {

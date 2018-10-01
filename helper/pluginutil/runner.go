@@ -10,7 +10,7 @@ import (
 	"time"
 
 	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
+	plugin "github.com/hashicorp/go-plugin"
 	"github.com/hashicorp/vault/api"
 	"github.com/hashicorp/vault/helper/consts"
 	"github.com/hashicorp/vault/helper/wrapping"
@@ -20,7 +20,7 @@ import (
 // Looker defines the plugin Lookup function that looks into the plugin catalog
 // for available plugins and returns a PluginRunner
 type Looker interface {
-	LookupPlugin(context.Context, string, consts.BackendType) (*PluginRunner, error)
+	LookupPlugin(context.Context, string, consts.PluginType) (*PluginRunner, error)
 }
 
 // Wrapper interface defines the functions needed by the runner to wrap the
